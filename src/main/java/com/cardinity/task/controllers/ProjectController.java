@@ -2,14 +2,11 @@ package com.cardinity.task.controllers;
 
 import java.util.List;
 
+import com.cardinity.task.dto.FetchProjectDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.cardinity.task.dto.ProjectCreateDTO;
 import com.cardinity.task.dto.ProjectResponseDTO;
@@ -22,14 +19,14 @@ public class ProjectController {
 	@Autowired
 	ProjectService projectService;
 
-	@GetMapping
-	public List<ProjectResponseDTO> getAllProject() {
-		return projectService.getAllProject();
+	@GetMapping("/{username}")
+	public ResponseEntity<List<ProjectResponseDTO>> getAllProject(@PathVariable String username) {
+		return new ResponseEntity<>(projectService.getAllProject(username), HttpStatus.OK);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ProjectResponseDTO create(@RequestBody ProjectCreateDTO projectCreateDTO) {
-		return projectService.createProject(projectCreateDTO);
+	public ResponseEntity<ProjectResponseDTO> create(@RequestBody ProjectCreateDTO projectCreateDTO) {
+		return new ResponseEntity<>(projectService.createProject(projectCreateDTO), HttpStatus.OK);
 	}
 }

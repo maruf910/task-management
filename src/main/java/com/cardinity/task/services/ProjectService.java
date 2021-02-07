@@ -1,10 +1,11 @@
 package com.cardinity.task.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.cardinity.task.repositories.UserRepository;
+import com.cardinity.task.dto.FetchProjectDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,22 +24,40 @@ public class ProjectService {
 	UserService userService;
 	@Autowired
 	ModelMapper mapper;
+	@Autowired
+	ValidationService validationService;
 	
-	public List<ProjectResponseDTO> getAllProject() {
-		List<Project> allProject = projectRepository.findAll();
+	public List<ProjectResponseDTO> getAllProject(String username) {
+		validationService.validateUserName(username);
+		List<Project> allProject = new ArrayList<>();
+		if(userService.isAdmin(username)) {
+			allProject = projectRepository.findAll();
+		} else {
+			UUID userUUID = userService.getUUIDbyUserName(username);
+			allProject = projectRepository.findAllByProjectOwnerId(userUUID);
+		}
 		return allProject.stream()
-		.map(entity -> mapper.map(entity, ProjectResponseDTO.class))
+		.map(entity -> convertProjectToProjectResponseDTO(entity))
 		.collect(Collectors.toList());
 	}
+
 	public ProjectResponseDTO createProject(ProjectCreateDTO dto) {
+		validationService.validateProjectCreateDto(dto);
 		Project project = mapper.map(dto, Project.class);
 		project.setProjectOwnerId(getCurrentUserId(dto.getUserName()));
-		return mapper.map(projectRepository.save(project), ProjectResponseDTO.class);
+		Project retProject = projectRepository.save(project);
+		return convertProjectToProjectResponseDTO(retProject);
 	}
 	
 	
 	/* Private classes */
 	private UUID getCurrentUserId(String userName) {
 		return userService.getUUIDbyUserName(userName);
+	}
+	private ProjectResponseDTO convertProjectToProjectResponseDTO(Project project) {
+		ProjectResponseDTO dto = new ProjectResponseDTO();
+		dto.setProjectName(project.getProjectName());
+		dto.setOwnerUserName(userService.getUserNameByUUID(project.getProjectOwnerId()));
+		return dto;
 	}
 }
