@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.cardinity.task.entities.Project;
 import org.springframework.data.jpa.repository.Query;
 
-public interface ProjectRepository extends JpaRepository<Project, UUID> {
-    public List<Project> findAllByProjectOwnerId(UUID projectOwnerId);
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+    public List<Project> findAllByProjectOwnerId(long projectOwnerId);
 }

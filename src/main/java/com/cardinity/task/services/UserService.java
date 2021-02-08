@@ -5,6 +5,7 @@ import com.cardinity.task.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,13 +19,20 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public List<User> getAllUser() {
+        return userRepository.findAll();
+    }
+    public User findByID(long id) {
+        return userRepository.findById(id).get();
+    }
+
     public User getUserByUsername(String userName) {
         return userRepository.findByUserName(userName);
     }
 
-    public UUID getUUIDbyUserName(String userName) {
+    public long getUUIDbyUserName(String userName) {
         User user = userRepository.findByUserName(userName);
-        if(Objects.isNull(user)) return null;
+        if(Objects.isNull(user)) return 0;
         else return user.getId();
     }
 
@@ -40,7 +48,7 @@ public class UserService {
         return false;
     }
 
-    public String getUserNameByUUID(UUID id) {
+    public String getUserNameByUUID(long id) {
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()) return user.get().getUserName();
         else return "Not Found";

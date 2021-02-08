@@ -2,14 +2,11 @@ package com.cardinity.task.entities;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 @Data
@@ -17,12 +14,11 @@ import javax.persistence.Table;
 @Table(name="project")
 public class Project {
 	@Id
-    @GeneratedValue(generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id", nullable = false, columnDefinition = "BINARY(16)")
-	private UUID id;
-	@Column(name = "project_name", nullable = false)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(nullable = false)
+	private long id;
+	@Column(nullable = false)
 	private String projectName;
-	@Column(name = "project_owner_id", nullable = false)
-	private UUID projectOwnerId;
+	@Column(nullable = false)
+	private long projectOwnerId;
 }

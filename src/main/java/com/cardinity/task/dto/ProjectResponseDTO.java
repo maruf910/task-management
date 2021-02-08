@@ -8,4 +8,5 @@ import java.util.UUID;
 public class ProjectResponseDTO {
 	private String projectName;
 	private String ownerUserName;
+	private long projectOwnerId;
 }

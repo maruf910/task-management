@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -18,5 +21,13 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody User user) {
         userService.createUser(user);
+    }
+    @GetMapping
+    public List<User> getUser() {
+        return userService.getAllUser();
+    }
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable long id) {
+        return userService.findByID(id);
     }
 }

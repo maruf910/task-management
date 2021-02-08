@@ -33,12 +33,15 @@ public class ProjectService {
 		if(userService.isAdmin(username)) {
 			allProject = projectRepository.findAll();
 		} else {
-			UUID userUUID = userService.getUUIDbyUserName(username);
+			long userUUID = userService.getUUIDbyUserName(username);
 			allProject = projectRepository.findAllByProjectOwnerId(userUUID);
 		}
 		return allProject.stream()
 		.map(entity -> convertProjectToProjectResponseDTO(entity))
 		.collect(Collectors.toList());
+	}
+	public List<Project> getAll() {
+		return projectRepository.findAll();
 	}
 
 	public ProjectResponseDTO createProject(ProjectCreateDTO dto) {
@@ -51,13 +54,15 @@ public class ProjectService {
 	
 	
 	/* Private classes */
-	private UUID getCurrentUserId(String userName) {
+	private long getCurrentUserId(String userName) {
 		return userService.getUUIDbyUserName(userName);
 	}
+
 	private ProjectResponseDTO convertProjectToProjectResponseDTO(Project project) {
 		ProjectResponseDTO dto = new ProjectResponseDTO();
 		dto.setProjectName(project.getProjectName());
 		dto.setOwnerUserName(userService.getUserNameByUUID(project.getProjectOwnerId()));
+		dto.setProjectOwnerId(project.getProjectOwnerId());
 		return dto;
 	}
 }
